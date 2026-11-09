@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>LinearKnot: Linear-Time Approximation of the Pseudoknot Partition Function</title>
+  <meta name="description" content="LinearKnot is the first linear-time approximation of the Dirks and Pierce (DP03) pseudoknot partition function, the model underlying NUPACK's pseudoknot predictions.">
+  <meta name="author" content="Milan Gautam, David H. Mathews, Liang Huang">
+  <meta name="keywords" content="RNA secondary structure, pseudoknots, partition function, base-pairing probabilities, linear-time algorithms, LinearKnot, DP03, NUPACK">
+
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="LinearKnot">
+  <meta property="og:title" content="LinearKnot: Linear-Time Approximation of the Pseudoknot Partition Function">
+  <meta property="og:description" content="The first linear-time approximation of the Dirks and Pierce (DP03) pseudoknot partition function, the model underlying NUPACK's pseudoknot predictions.">
+  <meta property="og:url" content="https://gautammilan.github.io/LinearKnot_paper/">
+  <meta property="og:image" content="https://gautammilan.github.io/LinearKnot_paper/static/images/fig1.png">
+  <meta property="og:image:width" content="1982">
+  <meta property="og:image:height" content="1263">
+  <meta property="og:image:alt" content="Figure 1 of the LinearKnot paper: DP03's pseudoknot factors, DP03 states and LinearKnot's left-to-right states.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="LinearKnot: Linear-Time Approximation of the Pseudoknot Partition Function">
+  <meta name="twitter:description" content="The first linear-time approximation of the Dirks and Pierce (DP03) pseudoknot partition function, the model underlying NUPACK's pseudoknot predictions.">
+  <meta name="twitter:image" content="https://gautammilan.github.io/LinearKnot_paper/static/images/fig1.png">
+
+  <link rel="icon" type="image/svg+xml" href="static/images/favicon.svg">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css"
+        integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"
+          integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+          integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"></script>
+
+  <link rel="stylesheet" href="static/css/style.css">
+  <script defer src="static/js/main.js"></script>
+</head>
+<body>
+
+<header class="hero">
+  <div class="container">
+    <h1 class="title">LinearKnot: Linear-Time Approximation of the Pseudoknot Partition Function</h1>
+
+    <p class="authors">
+      <span class="author">Milan Gautam<sup>1</sup></span>
+      <span class="author">David H. Mathews<sup>3</sup></span>
+      <span class="author">Liang Huang<sup>1,2,&dagger;</sup></span>
+    </p>
+
+    <ul class="affiliations">
+      <li><sup>1</sup>School of EECS, Oregon State University</li>
+      <li><sup>2</sup>Dept. of Biochemistry &amp; Biophysics, Oregon State University</li>
+      <li><sup>3</sup>Dept. of Biochemistry &amp; Biophysics, University of Rochester Medical Center</li>
+    </ul>
+    <p class="corresponding"><sup>&dagger;</sup>Corresponding author</p>
+
+    <nav class="links" aria-label="Paper links">
+      <a class="button is-disabled" href="#" aria-disabled="true" title="Paper coming soon">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h8l6 6v14H6z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M14 2v6h6" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        <span>Paper (coming soon)</span>
+      </a>
+      <a class="button" href="https://github.com/gautammilan/LinearKnot" target="_blank" rel="noopener">
+        <svg class="icon" viewBox="0 0 16 16" aria-hidden="true"><path fill="currentColor" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+        <span>Code</span>
+      </a>
+      <a class="button is-disabled" href="#" aria-disabled="true" title="arXiv version coming soon">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+        <span>arXiv (coming soon)</span>
+      </a>
+      <a class="button" href="#bibtex">
+        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4H7a2 2 0 00-2 2v4l-2 2 2 2v4a2 2 0 002 2h2M15 4h2a2 2 0 012 2v4l2 2-2 2v4a2 2 0 01-2 2h-2" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span>BibTeX</span>
+      </a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="section teaser">
+    <div class="container">
+      <figure>
+        <a class="zoom" href="static/images/fig1.png" target="_blank" rel="noopener">
+          <img src="static/images/fig1.png" width="1982" height="1263"
+               alt="Figure 1 of the paper. (a) An H-type pseudoknot with stem A (blue) and stem B (red) and the three fillers F1, F2, F3 between their arms. (b) Building blocks shared by DP03 and LinearKnot. (c) DP03 states. (d) LinearKnot's left-to-right states, each listing the parts of the pseudoknot it holds.">
+        </a>
+        <figcaption>
+          <strong>Figure 1.</strong> (a) The five factors of DP03&rsquo;s pseudoknot rule for an H-type pseudoknot. (b) Building blocks shared by both algorithms. (c) DP03&rsquo;s states. (d) Our left-to-right (L2R) states, in the order the scan creates them.
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section" id="tldr">
+    <div class="container">
+      <h2>TL;DR</h2>
+      <p class="tldr">
+        LinearKnot is the first linear-time approximation of the Dirks and Pierce (DP03) pseudoknot partition function, the model underlying NUPACK&rsquo;s pseudoknot predictions.
+        It folds the 9,392&nbsp;nt Rous sarcoma virus genome in 2.4 hours, where exact DP03 would need an estimated 40,000 years, and matches exact DP03 base-pair probabilities with a median RMSD of \(9.2\times10^{-7}\) on 418 PseudoBase RNAs.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" id="abstract">
+    <div class="container">
+      <h2>Abstract</h2>
+      <p class="abstract">
+        Pseudoknots are a common RNA structure where two or more helices cross, and they are central to many functional RNAs, including frameshifting signals, telomerase RNA, riboswitches and viral genomes.
+        However, predicting RNA structures with pseudoknots is notoriously hard, so the vast majority of RNA secondary structure prediction algorithms and tools only considered pseudoknot-free structures.
+        With arbitrary pseudoknots, finding the minimum free energy (MFE) structure is NP-hard, and computing the partition function is even harder.
+        Dirks and Pierce (DP03) pioneered the first pseudoknot partition function, which underlies NUPACK&rsquo;s pseudoknot model, but it takes \(\mathcal{O}(n^5)\) time and \(\mathcal{O}(n^4)\) memory, making it only practical for very short sequences.
+        While the much simpler pseudoknot-free prediction can run in linear time with approximate dynamic programming like LinearFold and LinearPartition, these techniques do not transfer easily to pseudoknotted prediction like DP03: a partial pseudoknot leaves a gap that is filled by its crossing partner, whose complementary sequence may still lie ahead of the scan, so it cannot be ranked by its inside weight.
+        Even with an estimate of this missing weight, directly pruning DP03 remains expensive: scoring each partial stem sums over the unspecified boundaries of its partner&rsquo;s complementary sequence.
+        We present LinearKnot, a linear-time approximation of DP03 in three passes: (a) a LinearPartition calculation gives pseudoknot-free weights; (b) a second pass builds tables that estimate each partial stem&rsquo;s crossing partner; and (c) a third scans a left-to-right reformulation of DP03 that reserves the 5&prime; nucleotides in the pseudoknot helix for subsequent pairing, keeping the states with the largest estimated contribution.
+        Without pruning, this reformulation computes exactly DP03&rsquo;s pseudoknot recursion, over the same structures with the same energies.
+        Kept states are combined by DP03&rsquo;s exact recursions, so the only approximation is which states the beam keeps.
+        The scan of LinearKnot is linear in time and memory; end-to-end, time grows linearly (\(n^{1.01}\)) and memory marginally above linear (\(n^{1.15}\)) from 1,000 to 9,392&nbsp;nt, because the supporting passes are not yet fully beam-bounded.
+        It folds the 9,392&nbsp;nt Rous sarcoma virus genome in 2.4 hours and 90.5&nbsp;GB, where exact DP03 would need an estimated 40,000 years and 54 million GB of memory (extrapolating NUPACK&rsquo;s measured \(n^{5.39}\) time and \(n^{3.91}\) memory), and matches exact DP03 base-pair probabilities on 418 PseudoBase RNAs with a median RMSD of \(9.2\times10^{-7}\) (mean \(6.8\times10^{-5}\)).
+        Our code is available at <a href="https://github.com/gautammilan/LinearKnot">https://github.com/gautammilan/LinearKnot</a>.
+      </p>
+    </div>
+  </section>
+
+  <section class="section" id="method">
+    <div class="container">
+      <h2>Method Overview</h2>
+      <ol class="passes">
+        <li><strong>Pass 1:</strong> LinearPartition gives pseudoknot-free inside and outside weights.</li>
+        <li><strong>Pass 2:</strong> builds pseudoknot-free filler and partner tables that estimate each partial stem&rsquo;s crossing partner.</li>
+        <li><strong>Pass 3:</strong> a beamed left-to-right reformulation of DP03 (LR-DP03) that reserves the partner&rsquo;s arm inside the state, so each state has one role and can be ranked by inside &times; estimated outside weight. Without pruning, LR-DP03 computes exactly DP03&rsquo;s partition function; the only approximation is which states the beam keeps.</li>
+      </ol>
+      <figure>
+        <a class="zoom" href="static/images/fig4.png" target="_blank" rel="noopener">
+          <img src="static/images/fig4.png" width="1761" height="1750" loading="lazy"
+               alt="Figure 4 of the paper: the left-to-right grammar in six steps. Step 1 reads filler F1 and reserves B's left arm; Step 2 seeds stem A; Step 3 initializes and grows A; Step 4 closes A and reads filler F3; Step 5 initializes and grows B; Step 6 closes the pseudoknot.">
+        </a>
+        <figcaption>
+          <strong>Figure 4.</strong> The L2R grammar of Pass 3, in six steps: reserve B&rsquo;s left arm, seed A, grow A, close A and read the last filler, grow B, and close the pseudoknot.
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section" id="results">
+    <div class="container">
+      <h2>Results</h2>
+
+      <h3>Scalability</h3>
+      <p>
+        On prefixes of the Rous sarcoma virus genome up to the full 9,392&nbsp;nt, the time of LinearKnot grows as \(n^{1.01}\) and its memory as \(n^{1.15}\); the full genome takes 2.4&nbsp;h and 90.5&nbsp;GB.
+        NUPACK (exact DP03) grows as \(n^{5.39}\) in time and \(n^{3.91}\) in memory, and takes 18.8&nbsp;h and 283&nbsp;GB at 418&nbsp;nt.
+      </p>
+      <figure class="narrow">
+        <a class="zoom" href="static/images/fig6.png" target="_blank" rel="noopener">
+          <img src="static/images/fig6.png" width="1955" height="957" loading="lazy"
+               alt="Figure 6a and 6b of the paper: (a) running time in hours and (b) peak memory in GB against sequence length in thousands of nucleotides, for LinearKnot, CParty with ThreshKnot, HotKnots and NUPACK, with fitted scaling exponents in the legend.">
+        </a>
+        <figcaption>
+          <strong>Figure 6 (a, b).</strong> (a) Time and (b) peak memory against sequence length, on prefixes of the Rous sarcoma virus genome up to the full 9,392&nbsp;nt. Open square: CParty did not finish. Dashed: fits.
+        </figcaption>
+      </figure>
+
+      <h3>Accuracy</h3>
+      <figure class="table-figure">
+        <div class="table-scroll" tabindex="0" role="region" aria-label="Accuracy table">
+          <table class="results">
+            <thead>
+              <tr>
+                <th rowspan="2" class="method">Method</th>
+                <th colspan="2" class="group">PseudoBase, seq. avg.</th>
+                <th colspan="2" class="group">ArchiveII, family avg.</th>
+              </tr>
+              <tr>
+                <th>All pairs<br><span class="prf">P / R / F1</span></th>
+                <th>Crossing<br><span class="prf">P / R / F1</span></th>
+                <th>All pairs<br><span class="prf">P / R / F1</span></th>
+                <th>Crossing<br><span class="prf">P / R / F1</span></th>
+              </tr>
+            </thead>
+            <tbody class="ours">
+              <tr>
+                <td class="method">LinearKnot</td>
+                <td>75.3 / <b>78.9</b> / <b>76.4</b></td>
+                <td>76.1 / <b>69.1</b> / <b>67.1</b></td>
+                <td>44.0 / 51.7 / 47.1</td>
+                <td>5.9 / <b>20.6</b> / <b>7.0</b></td>
+              </tr>
+            </tbody>
+            <tbody>
+              <tr>
+                <td class="method">LinearPartition-V + T</td>
+                <td>65.2 / 55.1 / 58.7</td>
+                <td>37.3 / 2.8 / 3.0</td>
+                <td>47.8 / <b>56.4</b> / 51.3</td>
+                <td>3.9 / 2.5 / 1.5</td>
+              </tr>
+              <tr>
+                <td class="method">LinearPartition-C + T</td>
+                <td><b>77.3</b> / 54.1 / 61.4</td>
+                <td>60.9 / 3.8 / 4.2</td>
+                <td><b>59.3</b> / 51.8 / <b>54.3</b></td>
+                <td>7.4 / 1.4 / 1.1</td>
+              </tr>
+              <tr>
+                <td class="method">IPknot</td>
+                <td>76.5 / 64.8 / 68.9</td>
+                <td>62.3 / 30.5 / 32.0</td>
+                <td>54.2 / 55.5 / 54.2</td>
+                <td>6.7 / 13.7 / 6.2</td>
+              </tr>
+              <tr>
+                <td class="method">IPknot (RNAfold)</td>
+                <td>70.3 / 59.7 / 63.4</td>
+                <td>54.4 / 25.3 / 26.9</td>
+                <td>51.7 / 51.9 / 51.2</td>
+                <td><b>7.7</b> / 13.4 / 6.5</td>
+              </tr>
+              <tr>
+                <td class="method">CParty + T</td>
+                <td>71.7 / 71.8 / 71.0</td>
+                <td>75.7 / 52.9 / 51.8</td>
+                <td>50.9 / 52.2 / 51.1</td>
+                <td>6.6 / 2.6 / 1.8</td>
+              </tr>
+              <tr>
+                <td class="method">HotKnots 2.0</td>
+                <td>75.1 / 73.1 / 73.1</td>
+                <td><b>76.8</b> / 49.1 / 47.7</td>
+                <td>&ndash;</td>
+                <td>&ndash;</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <figcaption>
+          <strong>Figure 7a.</strong> Accuracy (percent): PseudoBase averaged over 445 sequences, ArchiveII over families (3,843 sequences); &ldquo;+ T&rdquo; means with ThreshKnot.
+        </figcaption>
+      </figure>
+
+      <h3>Case Study</h3>
+      <p>
+        The <i>gag-pol</i> frameshift element of Rous sarcoma virus.
+        LinearKnot recovers the H-type pseudoknot, and its ThreshKnot structure has the highest F1 against PDB 9DID (0.71 vs 0.67 for HotKnots).
+      </p>
+      <figure>
+        <a class="zoom" href="static/images/fig8.png" target="_blank" rel="noopener">
+          <img src="static/images/fig8.png" width="1951" height="442" loading="lazy"
+               alt="Figure 8 of the paper: arc diagrams of the Rous sarcoma virus gag-pol frameshift element, positions 2476 to 2602. Left: the known structure from PDB 9DID with helices A to F labeled. Right: LinearKnot pair probabilities on the 127-nt element, with correct pairs above the axis in blue and incorrect pairs below in red.">
+        </a>
+        <figcaption>
+          <strong>Figure 8.</strong> The <i>gag-pol</i> frameshift element of Rous sarcoma virus. Left: the known structure (PDB 9DID) mapped to the genome. Right: LinearKnot&rsquo;s pair probabilities on the 127&nbsp;nt element; known pairs above the axis (blue), others below (red).
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="section" id="bibtex">
+    <div class="container">
+      <h2>BibTeX</h2>
+      <div class="bibtex">
+        <button type="button" class="copy" data-copy-target="bibtex-code" aria-label="Copy BibTeX to clipboard">Copy</button>
+        <pre><code id="bibtex-code">@article{gautam2026linearknot,
+  title  = {LinearKnot: Linear-Time Approximation of the Pseudoknot Partition Function},
+  author = {Gautam, Milan and Mathews, David H. and Huang, Liang},
+  year   = {2026},
+  note   = {Preprint}
+}</code></pre>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="container">
+    <p>Page template adapted from <a href="https://github.com/nerfies/nerfies.github.io" target="_blank" rel="noopener">Nerfies</a>.</p>
+    <p>Last updated: November 8, 2026.</p>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox" hidden>
+  <button type="button" class="lightbox-close" aria-label="Close">&times;</button>
+  <img alt="">
+</div>
+
+</body>
+</html>
